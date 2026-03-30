@@ -1,0 +1,160 @@
+/* ── Page header ──────────────────────────────────── */
+.budgets-page h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+}
+
+/* ── Add form ─────────────────────────────────────── */
+.budget-form-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.budget-form-card h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.budget-form {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.budget-form input,
+.budget-form select {
+  padding: 0 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: #f8fafc;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  height: 42px;
+  width: 100%;
+}
+
+.budget-form input:focus,
+.budget-form select:focus {
+  border-color: var(--color-indigo);
+  background: white;
+}
+
+.budget-form button {
+  background: linear-gradient(135deg, #4f46e5, #3730a3);
+  color: white;
+  border: none;
+  padding: 0 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  height: 42px;
+  transition: opacity 0.15s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.35);
+}
+
+.budget-form button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ── Budget list ──────────────────────────────────── */
+.budget-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.budget-item {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  transition: box-shadow 0.15s;
+}
+
+.budget-item:hover { box-shadow: var(--shadow-md); }
+
+.budget-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.budget-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.budget-amounts {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.budget-amounts .over {
+  color: var(--color-red);
+  font-weight: 700;
+}
+
+.budget-pct {
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.budget-pct.safe { color: var(--color-green); }
+.budget-pct.warning { color: var(--color-amber); }
+.budget-pct.over { color: var(--color-red); }
+
+/* ── Progress bar ─────────────────────────────────── */
+.progress-bar {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+}
+
+.progress-fill.warning {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.progress-fill.over {
+  background: linear-gradient(90deg, #f43f5e, #fb7185);
+}
+
+.no-data {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 48px;
+  font-size: 0.875rem;
+}

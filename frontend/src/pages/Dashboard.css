@@ -1,0 +1,281 @@
+/* ── Page header ──────────────────────────────────── */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  gap: 16px;
+}
+
+.dashboard-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dashboard-header h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+}
+
+/* ── Monthly / Yearly toggle ──────────────────────── */
+.view-toggle {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle button {
+  background: none;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.view-toggle button.active {
+  background: white;
+  color: var(--color-indigo);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.month-picker {
+  display: flex;
+  gap: 8px;
+}
+
+.month-picker select {
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.month-picker select:focus {
+  border-color: var(--color-indigo);
+}
+
+/* ── Summary cards ────────────────────────────────── */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.card span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+.card h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 6px;
+  letter-spacing: -0.03em;
+}
+
+.card.income {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+}
+.card.income::after { background: #34d399; }
+
+.card.expense {
+  background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
+  color: #9f1239;
+}
+.card.expense::after { background: #fb7185; }
+
+.card.balance.positive {
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  color: #3730a3;
+}
+.card.balance.positive::after { background: #818cf8; }
+
+.card.balance.negative {
+  background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
+  color: #9f1239;
+}
+
+/* ── Wide cards row (savings + net worth) ─────────── */
+.summary-cards-wide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card.savings {
+  background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+  color: #713f12;
+}
+.card.savings::after { background: #facc15; }
+
+.card.net-worth.positive {
+  background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
+  color: #14532d;
+}
+.card.net-worth.positive::after { background: #4ade80; }
+
+.card.net-worth.negative {
+  background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
+  color: #9f1239;
+}
+
+.card-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0.6;
+  margin-top: 6px;
+}
+
+/* ── Full-width chart card ────────────────────────── */
+.chart-full {
+  grid-column: 1 / -1;
+  margin-bottom: 20px;
+}
+
+/* ── Charts grid ──────────────────────────────────── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.chart-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.chart-card h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.no-data {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 48px 0;
+}
+
+/* ── Top expenses list ────────────────────────────── */
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  transition: background 0.1s;
+}
+
+.category-row:hover {
+  background: #f8fafc;
+}
+
+.category-row span:first-child {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-row span:last-child {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ── Yearly breakdown table ───────────────────────── */
+.yearly-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.yearly-table-head {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 1fr;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.yearly-table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 1fr;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  transition: background 0.1s;
+}
+
+.yearly-table-row:hover { background: #f8fafc; }
+
+.yearly-table-row span:first-child {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.amount-income { color: #16a34a; font-weight: 600; }
+.amount-expense { color: #dc2626; font-weight: 600; }
+.amount-balance.pos { color: #3730a3; font-weight: 700; }
+.amount-balance.neg { color: #dc2626; font-weight: 700; }
