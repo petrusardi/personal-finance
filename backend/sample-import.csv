@@ -1,0 +1,6 @@
+date,type,amount,category,description
+2026-03-01,INCOME,5000,Salary,Monthly salary
+2026-03-05,EXPENSE,120.50,Food & Drink,Grocery shopping
+2026-03-07,EXPENSE,45,Transport,Fuel
+2026-03-10,EXPENSE,200,Shopping,New shoes
+2026-03-15,INCOME,800,Freelance,Web project
