@@ -178,7 +178,7 @@ export default function Dashboard() {
             <div className={`card net-worth ${currentBalance >= 0 ? 'positive' : 'negative'}`}>
               <span>Saldo Rekening Saat Ini</span>
               <h2>Rp {currentBalance.toLocaleString('id-ID')}</h2>
-              <p className="card-sub">Saldo awal + semua income − semua expense</p>
+              <p className="card-sub">Saldo awal + income debit − expense debit</p>
             </div>
           </div>
 
@@ -263,7 +263,7 @@ export default function Dashboard() {
             <div className={`card net-worth ${currentBalance >= 0 ? 'positive' : 'negative'}`}>
               <span>Saldo Rekening Saat Ini</span>
               <h2>Rp {currentBalance.toLocaleString('id-ID')}</h2>
-              <p className="card-sub">Saldo awal + semua income − semua expense</p>
+              <p className="card-sub">Saldo awal + income debit − expense debit</p>
             </div>
           </div>
 

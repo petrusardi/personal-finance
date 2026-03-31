@@ -28,11 +28,11 @@ const getCurrentBalance = async (req, res) => {
     const [initialRecord, income, expense] = await Promise.all([
       prisma.initialBalance.findUnique({ where: { userId: req.userId } }),
       prisma.transaction.aggregate({
-        where: { userId: req.userId, type: 'INCOME' },
+        where: { userId: req.userId, type: 'INCOME', paymentMethod: 'DEBIT' },
         _sum: { amount: true },
       }),
       prisma.transaction.aggregate({
-        where: { userId: req.userId, type: 'EXPENSE' },
+        where: { userId: req.userId, type: 'EXPENSE', paymentMethod: 'DEBIT' },
         _sum: { amount: true },
       }),
     ]);
