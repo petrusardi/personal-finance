@@ -54,6 +54,25 @@
   box-shadow: 0 2px 8px rgba(99,102,241,0.35);
 }
 
+.btn-reset {
+  background: #f1f5f9;
+  color: var(--color-text-secondary);
+  border: 1.5px solid var(--color-border);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-reset:hover {
+  background: #ffe4e6;
+  border-color: #fecdd3;
+  color: #dc2626;
+}
+
 .btn-primary:hover {
   opacity: 0.92;
   transform: translateY(-1px);

@@ -11,8 +11,14 @@ export default function Transactions() {
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
   const [showForm, setShowForm] = useState(false);
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterType, setFilterType] = useState('');
 
-  const { data, isLoading } = useTransactions({ month, year });
+  const { data, isLoading } = useTransactions({
+    month, year,
+    ...(filterCategory && { categoryId: filterCategory }),
+    ...(filterType && { type: filterType }),
+  });
   const { data: categories } = useCategories();
   const createTx = useCreateTransaction();
   const deleteTx = useDeleteTransaction();
@@ -29,7 +35,7 @@ export default function Transactions() {
     <div className="transactions-page">
       <div className="page-header">
         <h1>Transactions</h1>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="header-controls">
           <select value={month} onChange={(e) => setMonth(Number.parseInt(e.target.value))}>
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i + 1} value={i + 1}>{format(new Date(year, i, 1), 'MMMM')}</option>
@@ -38,6 +44,22 @@ export default function Transactions() {
           <select value={year} onChange={(e) => setYear(Number.parseInt(e.target.value))}>
             {[2023, 2024, 2025, 2026].map((y) => <option key={y} value={y}>{y}</option>)}
           </select>
+          <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+            <option value="">All Type</option>
+            <option value="INCOME">Income</option>
+            <option value="EXPENSE">Expense</option>
+          </select>
+          <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+            <option value="">All Category</option>
+            {categories?.map((c) => (
+              <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+            ))}
+          </select>
+          {(filterType || filterCategory) && (
+            <button className="btn-reset" onClick={() => { setFilterType(''); setFilterCategory(''); }}>
+              ✕ Reset
+            </button>
+          )}
           <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Add</button>
         </div>
       </div>
