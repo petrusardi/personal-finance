@@ -278,6 +278,176 @@
 
 .no-data { color: var(--color-text-muted); text-align: center; padding: 48px; font-size: 0.875rem; }
 
+/* ── View toggle (list/table) ──────────────────────── */
+.view-toggle-sm {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 7px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle-sm button {
+  background: none;
+  border: none;
+  padding: 6px 9px;
+  border-radius: 5px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s;
+}
+
+.view-toggle-sm button.active {
+  background: white;
+  color: var(--color-indigo);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ── Table view ────────────────────────────────────── */
+.tx-table-wrap {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+}
+
+.tx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.855rem;
+}
+
+.tx-table thead tr {
+  background: #f8fafc;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.tx-table th {
+  padding: 11px 16px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.tx-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.tx-table tbody tr:last-child td { border-bottom: none; }
+.tx-table tbody tr:hover { background: #fafbff; }
+
+.col-date { color: var(--color-text-muted); font-size: 0.8rem; white-space: nowrap; }
+.col-desc { color: var(--color-text-primary); font-weight: 500; max-width: 180px; }
+.col-cat {}
+.col-pm { white-space: nowrap; }
+.col-type {}
+.col-amount { text-align: right; font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
+.col-amount.income { color: var(--color-green); }
+.col-amount.expense { color: var(--color-red); }
+.col-actions { text-align: right; white-space: nowrap; }
+
+.tx-table th.col-amount { text-align: right; }
+
+.cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f1f5f9;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.type-badge.income { background: var(--color-green-light); color: #065f46; }
+.type-badge.expense { background: var(--color-red-light); color: #9f1239; }
+
+.tx-muted { color: var(--color-text-muted); }
+
+/* Make edit/delete always visible in table rows */
+.tx-table tbody tr .btn-edit,
+.tx-table tbody tr .btn-delete { opacity: 0; }
+.tx-table tbody tr:hover .btn-edit,
+.tx-table tbody tr:hover .btn-delete { opacity: 1; }
+
+/* ── Pagination ────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-page {
+  background: white;
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 6px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.btn-page:hover:not(:disabled) {
+  border-color: var(--color-indigo);
+  color: var(--color-indigo);
+  background: #eef2ff;
+}
+
+.btn-page.active {
+  background: var(--color-indigo);
+  border-color: var(--color-indigo);
+  color: white;
+}
+
+.btn-page:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+  padding: 0 4px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
 /* ── Edit button ───────────────────────────────────── */
 .btn-edit {
   background: none;

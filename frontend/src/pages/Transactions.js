@@ -107,18 +107,25 @@ function EditModal({ tx, categories, onClose, onSave }) {
   );
 }
 
+const LIMIT = 20;
+
 export default function Transactions() {
   const now = new Date();
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
+  const [page, setPage] = useState(1);
+  const [viewMode, setViewMode] = useState('list'); // 'list' | 'table'
   const [showForm, setShowForm] = useState(false);
   const [editingTx, setEditingTx] = useState(null);
   const [filterCategory, setFilterCategory] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterPayment, setFilterPayment] = useState('');
 
+  // Reset to page 1 when filters/month/year change
+  useEffect(() => { setPage(1); }, [month, year, filterCategory, filterType, filterPayment]);
+
   const { data, isLoading } = useTransactions({
-    month, year,
+    month, year, page, limit: LIMIT,
     ...(filterCategory && { categoryId: filterCategory }),
     ...(filterType && { type: filterType }),
     ...(filterPayment && { paymentMethod: filterPayment }),
@@ -142,13 +149,15 @@ export default function Transactions() {
   };
 
   const hasFilter = filterCategory || filterType || filterPayment;
-  const totalShown = data?.transactions?.length || 0;
-  const totalAmount = data?.transactions?.reduce((s, t) =>
-    t.type === 'EXPENSE' ? s - Number(t.amount) : s + Number(t.amount), 0) || 0;
+  const transactions = data?.transactions || [];
+  const totalRecords = data?.total || 0;
+  const totalPages = data?.pages || 1;
+
+  const totalAmount = transactions.reduce((s, t) =>
+    t.type === 'EXPENSE' ? s - Number(t.amount) : s + Number(t.amount), 0);
 
   return (
     <div className="transactions-page">
-      {/* Edit Modal */}
       {editingTx && (
         <EditModal
           tx={editingTx}
@@ -161,9 +170,9 @@ export default function Transactions() {
       <div className="page-header">
         <div>
           <h1>Transactions</h1>
-          {totalShown > 0 && (
+          {totalRecords > 0 && (
             <p className="tx-summary-line">
-              {totalShown} transaksi ·{' '}
+              {totalRecords} transaksi ·{' '}
               <span className={totalAmount >= 0 ? 'pos' : 'neg'}>
                 {totalAmount >= 0 ? '+' : ''}Rp {totalAmount.toLocaleString('id-ID')}
               </span>
@@ -199,6 +208,26 @@ export default function Transactions() {
               ✕ Reset
             </button>
           )}
+
+          {/* View toggle */}
+          <div className="view-toggle-sm">
+            <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')} title="List view">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="2" width="12" height="2" rx="1" fill="currentColor"/>
+                <rect x="1" y="6" width="12" height="2" rx="1" fill="currentColor"/>
+                <rect x="1" y="10" width="12" height="2" rx="1" fill="currentColor"/>
+              </svg>
+            </button>
+            <button className={viewMode === 'table' ? 'active' : ''} onClick={() => setViewMode('table')} title="Table view">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="1" width="5" height="5" rx="1" fill="currentColor"/>
+                <rect x="8" y="1" width="5" height="5" rx="1" fill="currentColor"/>
+                <rect x="1" y="8" width="5" height="5" rx="1" fill="currentColor"/>
+                <rect x="8" y="8" width="5" height="5" rx="1" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+
           <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
             {showForm ? '✕ Close' : '+ Add'}
           </button>
@@ -256,52 +285,166 @@ export default function Transactions() {
         </div>
       )}
 
-      <div className="tx-list">
-        {isLoading && (
-          <div className="tx-skeleton-wrap">
-            {[...Array(5)].map((_, i) => <div key={i} className="tx-skeleton" />)}
-          </div>
-        )}
-        {!isLoading && totalShown === 0 && <p className="no-data">No transactions found.</p>}
-        {data?.transactions?.map((tx) => (
-          <div key={tx.id} className={`tx-item ${tx.type.toLowerCase()}`}>
-            <div className="tx-left">
-              <div className="tx-icon-wrap">{tx.category?.icon}</div>
-              <div className="tx-info">
-                <p className="tx-desc">{tx.description || tx.category?.name}</p>
-                <div className="tx-meta">
-                  <span className="tx-date">{format(new Date(tx.date), 'dd MMM yyyy')}</span>
-                  <span className="tx-dot">·</span>
-                  <span className="tx-cat">{tx.category?.name || <span className="tx-no-cat">No category</span>}</span>
-                  {tx.paymentMethod && (
-                    <>
-                      <span className="tx-dot">·</span>
-                      <PaymentBadge method={tx.paymentMethod} />
-                    </>
-                  )}
+      {/* ── LIST VIEW ── */}
+      {viewMode === 'list' && (
+        <div className="tx-list">
+          {isLoading && (
+            <div className="tx-skeleton-wrap">
+              {[...Array(5)].map((_, i) => <div key={i} className="tx-skeleton" />)}
+            </div>
+          )}
+          {!isLoading && transactions.length === 0 && <p className="no-data">No transactions found.</p>}
+          {transactions.map((tx) => (
+            <div key={tx.id} className={`tx-item ${tx.type.toLowerCase()}`}>
+              <div className="tx-left">
+                <div className="tx-icon-wrap">{tx.category?.icon}</div>
+                <div className="tx-info">
+                  <p className="tx-desc">{tx.description || tx.category?.name}</p>
+                  <div className="tx-meta">
+                    <span className="tx-date">{format(new Date(tx.date), 'dd MMM yyyy')}</span>
+                    <span className="tx-dot">·</span>
+                    <span className="tx-cat">{tx.category?.name || <span className="tx-no-cat">No category</span>}</span>
+                    {tx.paymentMethod && (
+                      <>
+                        <span className="tx-dot">·</span>
+                        <PaymentBadge method={tx.paymentMethod} />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="tx-right">
+                <span className="tx-amount">
+                  {tx.type === 'INCOME' ? '+' : '-'}Rp {Number(tx.amount).toLocaleString('id-ID')}
+                </span>
+                <div className="tx-actions">
+                  <button onClick={() => setEditingTx(tx)} className="btn-edit" title="Edit">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  <button onClick={() => deleteTx.mutate(tx.id)} className="btn-delete" title="Delete">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
-            <div className="tx-right">
-              <span className="tx-amount">
-                {tx.type === 'INCOME' ? '+' : '-'}Rp {Number(tx.amount).toLocaleString('id-ID')}
-              </span>
-              <div className="tx-actions">
-                <button onClick={() => setEditingTx(tx)} className="btn-edit" title="Edit">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-                <button onClick={() => deleteTx.mutate(tx.id)} className="btn-delete" title="Delete">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                </button>
-              </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── TABLE VIEW ── */}
+      {viewMode === 'table' && (
+        <div className="tx-table-wrap">
+          {isLoading && (
+            <div className="tx-skeleton-wrap">
+              {[...Array(5)].map((_, i) => <div key={i} className="tx-skeleton" />)}
             </div>
+          )}
+          {!isLoading && transactions.length === 0 && <p className="no-data">No transactions found.</p>}
+          {transactions.length > 0 && (
+            <table className="tx-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Payment</th>
+                  <th>Type</th>
+                  <th className="col-amount">Amount</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((tx) => (
+                  <tr key={tx.id} className={tx.type.toLowerCase()}>
+                    <td className="col-date">{format(new Date(tx.date), 'dd MMM yyyy')}</td>
+                    <td className="col-desc">{tx.description || <span className="tx-muted">—</span>}</td>
+                    <td className="col-cat">
+                      <span className="cat-pill">
+                        {tx.category?.icon} {tx.category?.name || <span className="tx-muted">No category</span>}
+                      </span>
+                    </td>
+                    <td className="col-pm">
+                      {tx.paymentMethod ? <PaymentBadge method={tx.paymentMethod} /> : <span className="tx-muted">—</span>}
+                    </td>
+                    <td className="col-type">
+                      <span className={`type-badge ${tx.type.toLowerCase()}`}>{tx.type === 'INCOME' ? 'Income' : 'Expense'}</span>
+                    </td>
+                    <td className={`col-amount ${tx.type.toLowerCase()}`}>
+                      {tx.type === 'INCOME' ? '+' : '-'}Rp {Number(tx.amount).toLocaleString('id-ID')}
+                    </td>
+                    <td className="col-actions">
+                      <button onClick={() => setEditingTx(tx)} className="btn-edit" title="Edit">
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                          <path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                      <button onClick={() => deleteTx.mutate(tx.id)} className="btn-delete" title="Delete">
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                          <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {/* ── PAGINATION ── */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <span className="pagination-info">
+            Page {page} of {totalPages} · {totalRecords} records
+          </span>
+          <div className="pagination-controls">
+            <button
+              className="btn-page"
+              onClick={() => setPage(1)}
+              disabled={page === 1}
+              title="First page"
+            >«</button>
+            <button
+              className="btn-page"
+              onClick={() => setPage((p) => p - 1)}
+              disabled={page === 1}
+            >‹ Prev</button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 2)
+              .reduce((acc, p, i, arr) => {
+                if (i > 0 && p - arr[i - 1] > 1) acc.push('...');
+                acc.push(p);
+                return acc;
+              }, [])
+              .map((item, i) =>
+                item === '...'
+                  ? <span key={`ellipsis-${i}`} className="pagination-ellipsis">…</span>
+                  : <button
+                      key={item}
+                      className={`btn-page ${item === page ? 'active' : ''}`}
+                      onClick={() => setPage(item)}
+                    >{item}</button>
+              )
+            }
+            <button
+              className="btn-page"
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page === totalPages}
+            >Next ›</button>
+            <button
+              className="btn-page"
+              onClick={() => setPage(totalPages)}
+              disabled={page === totalPages}
+              title="Last page"
+            >»</button>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
