@@ -45,6 +45,19 @@ export const useCreateTransaction = () => {
   });
 };
 
+export const useUpdateTransaction = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }) => api.put(`/transactions/${id}`, data).then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['transactions'] });
+      qc.invalidateQueries({ queryKey: ['summary'] });
+      qc.invalidateQueries({ queryKey: ['byCategory'] });
+      qc.invalidateQueries({ queryKey: ['currentBalance'] });
+    },
+  });
+};
+
 export const useDeleteTransaction = () => {
   const qc = useQueryClient();
   return useMutation({
