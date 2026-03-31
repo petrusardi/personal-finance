@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { useSummary, useByCategory, useDailyExpenses, useYearlySummary } from '../hooks/useTransactions';
+import { useSummary, useByCategory, useByPaymentMethod, useDailyExpenses, useYearlySummary } from '../hooks/useTransactions';
 import { useCurrentBalance } from '../hooks/useBalance';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import {
@@ -8,6 +8,7 @@ import {
   CategoryScale, LinearScale, BarElement, Title,
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import PaymentBadge from '../components/PaymentBadge';
 import './Dashboard.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, ChartDataLabels);
@@ -42,6 +43,7 @@ export default function Dashboard() {
 
   // Yearly data
   const { data: yearlyData } = useYearlySummary(year);
+  const { data: byPaymentMethod } = useByPaymentMethod(month, year);
 
   // Savings (always shown)
   const { data: balanceData } = useCurrentBalance();
@@ -211,6 +213,31 @@ export default function Dashboard() {
               ) : <p className="no-data">No data for this month</p>}
             </div>
           </div>
+
+          {/* Payment Method Breakdown */}
+          {byPaymentMethod?.length > 0 && (
+            <div className="chart-card chart-full">
+              <h3>Expense by Payment Method</h3>
+              <div className="payment-method-grid">
+                {byPaymentMethod.map((item) => {
+                  const pmTotal = byPaymentMethod.reduce((s, d) => s + d.total, 0);
+                  const pct = pmTotal > 0 ? ((item.total / pmTotal) * 100).toFixed(1) : 0;
+                  return (
+                    <div key={item.method} className="pm-stat-card">
+                      <div className="pm-stat-top">
+                        <PaymentBadge method={item.method} />
+                        <span className="pm-pct">{pct}%</span>
+                      </div>
+                      <p className="pm-amount">Rp {item.total.toLocaleString('id-ID')}</p>
+                      <div className="pm-bar-track">
+                        <div className="pm-bar-fill" style={{ width: `${pct}%`, background: `var(--pm-${item.method === 'E_WALLET' ? 'ewallet' : item.method.toLowerCase()})` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </>
       )}
 

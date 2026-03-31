@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth.middleware');
-const { getAll, getSummary, getByCategory, getDailyExpenses, getYearlySummary, create, update, remove } = require('../controllers/transaction.controller');
+const { getAll, getSummary, getByCategory, getByPaymentMethod, getDailyExpenses, getYearlySummary, create, update, remove } = require('../controllers/transaction.controller');
 
 router.use(auth);
 router.get('/', getAll);
 router.get('/summary', getSummary);
 router.get('/by-category', getByCategory);
+router.get('/by-payment-method', getByPaymentMethod);
 router.get('/daily', getDailyExpenses);
 router.get('/yearly', getYearlySummary);
 router.post('/', create);

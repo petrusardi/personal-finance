@@ -241,6 +241,61 @@
   color: var(--color-text-primary);
 }
 
+/* ── Payment method breakdown ─────────────────────── */
+.payment-method-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.pm-stat-card {
+  background: var(--color-surface-2);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.pm-stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.pm-stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.pm-pct {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+}
+
+.pm-amount {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.pm-bar-track {
+  height: 5px;
+  background: var(--color-border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.pm-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 0.8;
+}
+
 /* ── Yearly breakdown table ───────────────────────── */
 .yearly-table {
   display: flex;

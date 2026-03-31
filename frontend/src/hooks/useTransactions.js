@@ -19,6 +19,12 @@ export const useByCategory = (month, year) =>
     queryFn: () => api.get('/transactions/by-category', { params: { month, year } }).then((r) => r.data),
   });
 
+export const useByPaymentMethod = (month, year) =>
+  useQuery({
+    queryKey: ['byPaymentMethod', month, year],
+    queryFn: () => api.get('/transactions/by-payment-method', { params: { month, year } }).then((r) => r.data),
+  });
+
 export const useDailyExpenses = (month, year) =>
   useQuery({
     queryKey: ['dailyExpenses', month, year],

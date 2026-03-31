@@ -6,6 +6,7 @@ const getAll = async (req, res) => {
 
   if (type) where.type = type;
   if (categoryId) where.categoryId = parseInt(categoryId);
+  if (req.query.paymentMethod) where.paymentMethod = req.query.paymentMethod;
   if (month && year) {
     const start = new Date(year, month - 1, 1);
     const end = new Date(year, month, 0, 23, 59, 59);
@@ -105,6 +106,21 @@ const remove = async (req, res) => {
   res.json({ message: 'Deleted' });
 };
 
+const getByPaymentMethod = async (req, res) => {
+  const { month, year } = req.query;
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 0, 23, 59, 59);
+
+  const data = await prisma.transaction.groupBy({
+    by: ['paymentMethod'],
+    where: { userId: req.userId, type: 'EXPENSE', date: { gte: start, lte: end }, paymentMethod: { not: null } },
+    _sum: { amount: true },
+    orderBy: { _sum: { amount: 'desc' } },
+  });
+
+  res.json(data.map((d) => ({ method: d.paymentMethod, total: Number(d._sum.amount) })));
+};
+
 const getDailyExpenses = async (req, res) => {
   const { month, year } = req.query;
   const start = new Date(year, month - 1, 1);
@@ -146,4 +162,4 @@ const getYearlySummary = async (req, res) => {
   res.json(monthly);
 };
 
-module.exports = { getAll, getSummary, getByCategory, getDailyExpenses, getYearlySummary, create, update, remove };
+module.exports = { getAll, getSummary, getByCategory, getByPaymentMethod, getDailyExpenses, getYearlySummary, create, update, remove };
