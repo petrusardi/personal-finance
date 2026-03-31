@@ -72,9 +72,17 @@ const getByCategory = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { amount, type, description, date, categoryId } = req.body;
+  const { amount, type, description, date, categoryId, paymentMethod } = req.body;
   const transaction = await prisma.transaction.create({
-    data: { amount, type, description, date: new Date(date), categoryId, userId: req.userId },
+    data: {
+      amount,
+      type,
+      description,
+      date: new Date(date),
+      categoryId: parseInt(categoryId),
+      userId: req.userId,
+      paymentMethod: paymentMethod || null,
+    },
     include: { category: true },
   });
   res.status(201).json(transaction);
@@ -87,9 +95,17 @@ const update = async (req, res) => {
   });
   if (!transaction) return res.status(404).json({ message: 'Not found' });
 
+  const { amount, type, description, date, categoryId, paymentMethod } = req.body;
   const updated = await prisma.transaction.update({
     where: { id: parseInt(id) },
-    data: req.body,
+    data: {
+      amount,
+      type,
+      description,
+      date: new Date(date),
+      categoryId: parseInt(categoryId),
+      paymentMethod: paymentMethod || null,
+    },
     include: { category: true },
   });
   res.json(updated);
