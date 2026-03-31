@@ -1,183 +1,175 @@
-/* ── Page header ──────────────────────────────────── */
+/* ── Page title ───────────────────────────────────── */
 .savings-page h1 {
   font-size: 1.6rem;
   font-weight: 800;
   color: var(--color-text-primary);
   letter-spacing: -0.03em;
+  margin-bottom: 4px;
 }
 
-/* ── Summary cards ────────────────────────────────── */
-.savings-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+.savings-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
   margin-bottom: 24px;
 }
 
-.savings-card {
+/* ── Current balance card ─────────────────────────── */
+.current-balance-card {
+  background: linear-gradient(135deg, #1e293b 0%, #312e81 100%);
   border-radius: var(--radius-lg);
-  padding: 24px 28px;
-  position: relative;
-  overflow: hidden;
+  padding: 32px 36px;
+  margin-bottom: 20px;
+  color: white;
 }
 
-.savings-card span {
+.current-balance-card > span {
   font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  opacity: 0.75;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
 }
 
-.savings-card h2 {
-  font-size: 1.7rem;
+.current-balance-card h2 {
+  font-size: 2.6rem;
   font-weight: 800;
-  margin-top: 6px;
   letter-spacing: -0.03em;
+  margin: 8px 0 24px;
 }
 
-.savings-card.balance {
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-  color: #3730a3;
+.current-balance-card h2.positive { color: #86efac; }
+.current-balance-card h2.negative { color: #fca5a5; }
+
+/* ── Breakdown row ────────────────────────────────── */
+.balance-breakdown {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.savings-card.deposit {
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  color: #065f46;
+.breakdown-item {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.savings-card.withdraw {
-  background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
-  color: #9f1239;
+.breakdown-item span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
 }
 
-/* ── Add form ─────────────────────────────────────── */
-.savings-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr auto;
+.breakdown-item strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.breakdown-item.income strong { color: #86efac; }
+.breakdown-item.expense strong { color: #fca5a5; }
+
+.breakdown-sep {
+  font-size: 1.4rem;
+  font-weight: 300;
+  opacity: 0.4;
+}
+
+/* ── Set initial balance form ─────────────────────── */
+.field-hint {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 14px;
+}
+
+.initial-balance-form {
+  display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.savings-form input,
-.savings-form select {
+.initial-balance-form input {
   padding: 0 14px;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
-  background: #f8fafc;
-  color: var(--color-text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  height: 44px;
+  width: 260px;
   outline: none;
-  transition: border-color 0.15s, background 0.15s;
-  height: 42px;
-  width: 100%;
+  background: #f8fafc;
+  transition: border-color 0.15s;
 }
 
-.savings-form input:focus,
-.savings-form select:focus {
+.initial-balance-form input:focus {
   border-color: var(--color-indigo);
   background: white;
 }
 
-.savings-form button {
-  background: linear-gradient(135deg, #047857, #065f46);
+.initial-balance-form button {
+  background: linear-gradient(135deg, #4f46e5, #3730a3);
   color: white;
   border: none;
   padding: 0 24px;
+  height: 44px;
   border-radius: var(--radius-sm);
-  cursor: pointer;
   font-weight: 700;
   font-size: 0.875rem;
-  white-space: nowrap;
-  height: 42px;
-  transition: opacity 0.15s, transform 0.1s;
-  box-shadow: 0 2px 8px rgba(5,150,105,0.35);
+  cursor: pointer;
+  transition: opacity 0.15s;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.35);
 }
 
-.savings-form button:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+.initial-balance-form button:hover { opacity: 0.9; }
+.initial-balance-form button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.btn-cancel {
+  background: #f1f5f9 !important;
+  color: var(--color-text-secondary) !important;
+  border: 1.5px solid var(--color-border) !important;
+  box-shadow: none !important;
 }
 
-/* ── List ─────────────────────────────────────────── */
-.savings-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.btn-cancel:hover { background: #e2e8f0 !important; }
 
-.savings-item {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: 14px 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
-  border-left: 4px solid transparent;
-  transition: box-shadow 0.15s, transform 0.1s;
-}
-
-.savings-item:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-
-.savings-item.deposit  { border-left-color: #22c55e; }
-.savings-item.withdrawal { border-left-color: #ef4444; }
-
-.savings-item-left {
+.initial-balance-display {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
-.savings-icon-wrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.deposit  .savings-icon-wrap { background: #dcfce7; }
-.withdrawal .savings-icon-wrap { background: #ffe4e6; }
-
-.savings-desc {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: var(--color-text-primary);
-}
-
-.savings-date {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  margin-top: 2px;
-}
-
-.savings-item-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.savings-amount {
+.initial-balance-display span {
+  font-size: 1.4rem;
   font-weight: 800;
-  font-size: 1rem;
-  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
 }
 
-.deposit   .savings-amount { color: #22c55e; }
-.withdrawal .savings-amount { color: #ef4444; }
+.initial-balance-display button {
+  background: #f1f5f9;
+  color: var(--color-indigo);
+  border: 1.5px solid #e0e7ff;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
 
-.no-data {
-  color: var(--color-text-muted);
-  text-align: center;
-  padding: 48px;
-  font-size: 0.875rem;
+.initial-balance-display button:hover {
+  background: #e0e7ff;
+}
+
+.saved-badge {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 4px 10px;
+  border-radius: 20px;
 }

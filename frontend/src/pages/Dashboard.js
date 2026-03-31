@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { useSummary, useByCategory, useDailyExpenses, useYearlySummary } from '../hooks/useTransactions';
-import { useSavingsBalance } from '../hooks/useSavings';
+import { useCurrentBalance } from '../hooks/useBalance';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS, ArcElement, Tooltip, Legend,
@@ -44,10 +44,9 @@ export default function Dashboard() {
   const { data: yearlyData } = useYearlySummary(year);
 
   // Savings (always shown)
-  const { data: savingsData } = useSavingsBalance();
-  const savingsBalance = savingsData?.balance || 0;
+  const { data: balanceData } = useCurrentBalance();
+  const currentBalance = balanceData?.current || 0;
   const monthlyBalance = summary?.balance || 0;
-  const netWorth = monthlyBalance + savingsBalance;
 
   // Yearly summary totals
   const yearlyIncome = yearlyData?.reduce((s, m) => s + m.income, 0) || 0;
@@ -174,15 +173,10 @@ export default function Dashboard() {
           </div>
 
           <div className="summary-cards-wide">
-            <div className="card savings">
-              <span>Savings Balance</span>
-              <h2>Rp {savingsBalance.toLocaleString('id-ID')}</h2>
-              <p className="card-sub">Total across all deposits &amp; withdrawals</p>
-            </div>
-            <div className={`card net-worth ${netWorth >= 0 ? 'positive' : 'negative'}`}>
-              <span>Total Net Worth</span>
-              <h2>Rp {netWorth.toLocaleString('id-ID')}</h2>
-              <p className="card-sub">Monthly balance + savings balance</p>
+            <div className={`card net-worth ${currentBalance >= 0 ? 'positive' : 'negative'}`}>
+              <span>Saldo Rekening Saat Ini</span>
+              <h2>Rp {currentBalance.toLocaleString('id-ID')}</h2>
+              <p className="card-sub">Saldo awal + semua income − semua expense</p>
             </div>
           </div>
 
@@ -239,15 +233,10 @@ export default function Dashboard() {
           </div>
 
           <div className="summary-cards-wide">
-            <div className="card savings">
-              <span>Savings Balance</span>
-              <h2>Rp {savingsBalance.toLocaleString('id-ID')}</h2>
-              <p className="card-sub">Total across all deposits &amp; withdrawals</p>
-            </div>
-            <div className={`card net-worth ${(yearlyBalance + savingsBalance) >= 0 ? 'positive' : 'negative'}`}>
-              <span>Total Net Worth</span>
-              <h2>Rp {(yearlyBalance + savingsBalance).toLocaleString('id-ID')}</h2>
-              <p className="card-sub">Yearly balance + savings balance</p>
+            <div className={`card net-worth ${currentBalance >= 0 ? 'positive' : 'negative'}`}>
+              <span>Saldo Rekening Saat Ini</span>
+              <h2>Rp {currentBalance.toLocaleString('id-ID')}</h2>
+              <p className="card-sub">Saldo awal + semua income − semua expense</p>
             </div>
           </div>
 

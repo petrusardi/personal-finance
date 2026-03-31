@@ -7,7 +7,7 @@ const categoryRoutes = require('./routes/category.routes');
 const transactionRoutes = require('./routes/transaction.routes');
 const budgetRoutes = require('./routes/budget.routes');
 const importRoutes = require('./routes/import.routes');
-const savingsRoutes = require('./routes/savings.routes');
+const balanceRoutes = require('./routes/balance.routes');
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/import', importRoutes);
-app.use('/api/savings', savingsRoutes);
+app.use('/api/balance', balanceRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 

@@ -1,108 +1,94 @@
 import { useState } from 'react';
-import { format } from 'date-fns';
-import { useForm } from 'react-hook-form';
-import { useSavings, useSavingsBalance, useCreateSavings, useDeleteSavings } from '../hooks/useSavings';
-import CurrencyInput from '../components/CurrencyInput';
+import { useInitialBalance, useCurrentBalance, useSetInitialBalance } from '../hooks/useBalance';
 import './Savings.css';
 
 export default function Savings() {
-  const [showForm, setShowForm] = useState(false);
-  const { data: entries, isLoading } = useSavings();
-  const { data: balanceData } = useSavingsBalance();
-  const createEntry = useCreateSavings();
-  const deleteEntry = useDeleteSavings();
+  const { data: initialData } = useInitialBalance();
+  const { data: currentData } = useCurrentBalance();
+  const setInitial = useSetInitialBalance();
 
-  const { register, control, handleSubmit, reset, formState: { isSubmitting } } = useForm();
+  const [inputValue, setInputValue] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  const onSubmit = async (data) => {
-    await createEntry.mutateAsync({
-      ...data,
-      amount: data.amount,
-    });
-    reset();
-    setShowForm(false);
+  const initialAmount = initialData?.amount || 0;
+  const current = currentData?.current || 0;
+  const totalIncome = currentData?.totalIncome || 0;
+  const totalExpense = currentData?.totalExpense || 0;
+
+  const handleSave = async () => {
+    const numeric = parseFloat(inputValue.replace(/\./g, '').replace(',', '.'));
+    if (isNaN(numeric) || numeric < 0) return;
+    await setInitial.mutateAsync(numeric);
+    setEditing(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
-  const totalDeposit = entries?.filter((e) => e.type === 'DEPOSIT').reduce((s, e) => s + Number(e.amount), 0) || 0;
-  const totalWithdraw = entries?.filter((e) => e.type === 'WITHDRAWAL').reduce((s, e) => s + Number(e.amount), 0) || 0;
-  const balance = balanceData?.balance || 0;
+  const handleEdit = () => {
+    setInputValue(initialAmount.toLocaleString('id-ID'));
+    setEditing(true);
+    setSaved(false);
+  };
 
   return (
     <div className="savings-page">
-      <div className="page-header">
-        <h1>Savings</h1>
-        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
-          + Add Entry
-        </button>
-      </div>
+      <h1>Saldo Rekening</h1>
+      <p className="savings-subtitle">
+        Saldo dihitung otomatis dari saldo awal + semua income − semua expense.
+      </p>
 
-      {/* Summary Cards */}
-      <div className="savings-cards">
-        <div className="savings-card balance">
-          <span>Total Balance</span>
-          <h2>Rp {balance.toLocaleString('id-ID')}</h2>
-        </div>
-        <div className="savings-card deposit">
-          <span>Total Deposited</span>
-          <h2>Rp {totalDeposit.toLocaleString('id-ID')}</h2>
-        </div>
-        <div className="savings-card withdraw">
-          <span>Total Withdrawn</span>
-          <h2>Rp {totalWithdraw.toLocaleString('id-ID')}</h2>
-        </div>
-      </div>
-
-      {/* Add Form */}
-      {showForm && (
-        <div className="form-card">
-          <h3>New Savings Entry</h3>
-          <form onSubmit={handleSubmit(onSubmit)} className="savings-form">
-            <select {...register('type', { required: true })}>
-              <option value="DEPOSIT">Deposit</option>
-              <option value="WITHDRAWAL">Withdrawal</option>
-            </select>
-            <CurrencyInput name="amount" control={control} rules={{ required: true, min: 1 }} placeholder="Jumlah" />
-            <input
-              type="date"
-              defaultValue={format(new Date(), 'yyyy-MM-dd')}
-              {...register('date', { required: true })}
-            />
-            <input
-              placeholder="Description (optional)"
-              {...register('description')}
-            />
-            <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : 'Save'}
-            </button>
-          </form>
-        </div>
-      )}
-
-      {/* Entries List */}
-      <div className="savings-list">
-        {isLoading && <p className="no-data">Loading...</p>}
-        {!isLoading && entries?.length === 0 && (
-          <p className="no-data">No savings entries yet. Start by adding a deposit!</p>
-        )}
-        {entries?.map((entry) => (
-          <div key={entry.id} className={`savings-item ${entry.type.toLowerCase()}`}>
-            <div className="savings-item-left">
-              <div className="savings-icon-wrap">
-                {entry.type === 'DEPOSIT' ? '⬆️' : '⬇️'}
-              </div>
-              <div>
-                <p className="savings-desc">{entry.description || (entry.type === 'DEPOSIT' ? 'Deposit' : 'Withdrawal')}</p>
-                <p className="savings-date">{format(new Date(entry.date), 'dd MMM yyyy')}</p>
-              </div>
-            </div>
-            <div className="savings-item-right">
-              <span className="savings-amount">
-                {entry.type === 'DEPOSIT' ? '+' : '-'}Rp {Number(entry.amount).toLocaleString('id-ID')}
-              </span>
-              <button onClick={() => deleteEntry.mutate(entry.id)} className="btn-delete">✕</button>
-            </div>
+      {/* Current balance — big display */}
+      <div className="current-balance-card">
+        <span>Saldo Saat Ini</span>
+        <h2 className={current >= 0 ? 'positive' : 'negative'}>
+          Rp {current.toLocaleString('id-ID')}
+        </h2>
+        <div className="balance-breakdown">
+          <div className="breakdown-item income">
+            <span>Saldo Awal</span>
+            <strong>Rp {initialAmount.toLocaleString('id-ID')}</strong>
           </div>
-        ))}
+          <span className="breakdown-sep">+</span>
+          <div className="breakdown-item income">
+            <span>Total Income</span>
+            <strong>Rp {totalIncome.toLocaleString('id-ID')}</strong>
+          </div>
+          <span className="breakdown-sep">−</span>
+          <div className="breakdown-item expense">
+            <span>Total Expense</span>
+            <strong>Rp {totalExpense.toLocaleString('id-ID')}</strong>
+          </div>
+        </div>
+      </div>
+
+      {/* Set initial balance */}
+      <div className="form-card">
+        <h3>Set Saldo Awal</h3>
+        <p className="field-hint">
+          Masukkan saldo rekening kamu sebelum mulai pakai app ini. Cukup diisi sekali.
+        </p>
+        {editing ? (
+          <div className="initial-balance-form">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Contoh: 5000000"
+              autoFocus
+            />
+            <button onClick={handleSave} disabled={setInitial.isPending}>
+              {setInitial.isPending ? 'Menyimpan...' : 'Simpan'}
+            </button>
+            <button className="btn-cancel" onClick={() => setEditing(false)}>Batal</button>
+          </div>
+        ) : (
+          <div className="initial-balance-display">
+            <span>Rp {initialAmount.toLocaleString('id-ID')}</span>
+            <button onClick={handleEdit}>Edit</button>
+            {saved && <span className="saved-badge">✓ Tersimpan</span>}
+          </div>
+        )}
       </div>
     </div>
   );
