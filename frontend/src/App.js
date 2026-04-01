@@ -13,15 +13,36 @@ import Layout from './components/layout/Layout';
 
 const queryClient = new QueryClient();
 
+const AppLoader = () => (
+  <div style={{
+    height: '100vh', display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center', gap: 16,
+    background: '#f0f2f8',
+  }}>
+    <div style={{
+      width: 48, height: 48, borderRadius: 14,
+      background: 'linear-gradient(135deg, #6366f1, #4338ca)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: 24,
+    }}>💰</div>
+    <div style={{
+      width: 32, height: 3, borderRadius: 99,
+      background: 'linear-gradient(90deg, #6366f1, #818cf8)',
+      animation: 'pulse 1.2s ease-in-out infinite',
+    }} />
+    <style>{`@keyframes pulse { 0%,100%{opacity:.4;transform:scaleX(.6)} 50%{opacity:1;transform:scaleX(1)} }`}</style>
+  </div>
+);
+
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{ padding: 40 }}>Loading...</div>;
+  if (loading) return <AppLoader />;
   return user ? children : <Navigate to="/login" />;
 };
 
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{ padding: 40 }}>Loading...</div>;
+  if (loading) return <AppLoader />;
   return user ? <Navigate to="/" /> : children;
 };
 
