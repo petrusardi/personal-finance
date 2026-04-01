@@ -8,6 +8,7 @@ import Transactions from './pages/Transactions';
 import Categories from './pages/Categories';
 import Budgets from './pages/Budgets';
 import Savings from './pages/Savings';
+import InitialBalance from './pages/InitialBalance';
 import Layout from './components/layout/Layout';
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ function AppRoutes() {
         <Route path="categories" element={<Categories />} />
         <Route path="budgets" element={<Budgets />} />
         <Route path="savings" element={<Savings />} />
+        <Route path="initial-balance" element={<InitialBalance />} />
       </Route>
     </Routes>
   );

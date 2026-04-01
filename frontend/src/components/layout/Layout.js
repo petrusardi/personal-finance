@@ -41,7 +41,10 @@ export default function Layout() {
             <span className="nav-icon">🎯</span>Budgets
           </NavLink>
           <NavLink to="/savings">
-            <span className="nav-icon">🏦</span>Savings
+            <span className="nav-icon">🏦</span>Saldo Rekening
+          </NavLink>
+          <NavLink to="/initial-balance">
+            <span className="nav-icon">💵</span>Saldo Awal
           </NavLink>
         </nav>
 
