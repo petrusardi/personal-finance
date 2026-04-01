@@ -8,6 +8,7 @@ import Transactions from './pages/Transactions';
 import Categories from './pages/Categories';
 import Budgets from './pages/Budgets';
 import Savings from './pages/Savings';
+import SaldoRekening from './pages/SaldoRekening';
 import InitialBalance from './pages/InitialBalance';
 import Layout from './components/layout/Layout';
 
@@ -36,6 +37,7 @@ function AppRoutes() {
         <Route path="categories" element={<Categories />} />
         <Route path="budgets" element={<Budgets />} />
         <Route path="savings" element={<Savings />} />
+        <Route path="saldo-rekening" element={<SaldoRekening />} />
         <Route path="initial-balance" element={<InitialBalance />} />
       </Route>
     </Routes>

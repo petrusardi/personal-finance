@@ -16,6 +16,8 @@ model User {
   transactions   Transaction[]
   budgets        Budget[]
   initialBalance InitialBalance?
+  savings        Savings[]
+  savingsEntries SavingsEntry[]
 }
 
 model Category {
@@ -64,6 +66,42 @@ model InitialBalance {
   amount    Decimal @db.Decimal(12, 2) @default(0)
   userId    Int     @unique
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Savings {
+  id        Int            @id @default(autoincrement())
+  name      String
+  icon      String         @default("💰")
+  type      SavingsType
+  target    Decimal?       @db.Decimal(12, 2)
+  userId    Int
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entries   SavingsEntry[]
+  createdAt DateTime       @default(now())
+}
+
+model SavingsEntry {
+  id        Int              @id @default(autoincrement())
+  savingsId Int
+  savings   Savings          @relation(fields: [savingsId], references: [id], onDelete: Cascade)
+  amount    Decimal          @db.Decimal(12, 2)
+  type      SavingsEntryType
+  note      String?
+  date      DateTime
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+}
+
+enum SavingsType {
+  TABUNGAN
+  INVESTASI
+}
+
+enum SavingsEntryType {
+  DEPOSIT
+  WITHDRAWAL
+  UPDATE
 }
 
 enum PaymentMethod {

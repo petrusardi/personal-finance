@@ -1,4 +1,4 @@
-/* ── Page title ───────────────────────────────────── */
+/* ── Page header ───────────────────────────────────── */
 .savings-page h1 {
   font-size: 1.6rem;
   font-weight: 800;
@@ -8,12 +8,351 @@
 }
 
 .savings-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   color: var(--color-text-muted);
-  margin-bottom: 24px;
+  margin-top: 2px;
 }
 
-/* ── Current balance card ─────────────────────────── */
+/* ── Total card ────────────────────────────────────── */
+.sv-total-card {
+  background: linear-gradient(135deg, #1e293b 0%, #312e81 100%);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.sv-total-card > span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+.sv-total-card h2 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 6px;
+}
+
+/* ── Savings grid ──────────────────────────────────── */
+.sv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ── Savings card ──────────────────────────────────── */
+.sv-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.sv-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.sv-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.sv-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sv-icon {
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  background: #f1f5f9;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sv-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.sv-type-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.sv-type-badge.tabungan {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.sv-type-badge.investasi {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.sv-delete-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  opacity: 0;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.sv-card:hover .sv-delete-btn { opacity: 1; }
+.sv-delete-btn:hover { color: var(--color-red); background: var(--color-red-light); }
+
+.sv-balance {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+/* ── Progress bar ──────────────────────────────────── */
+.sv-progress-wrap { margin-bottom: 10px; }
+
+.sv-progress-track {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.sv-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #818cf8);
+  border-radius: 99px;
+  transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sv-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.sv-entry-count {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+}
+
+/* ── Empty state ───────────────────────────────────── */
+.sv-empty-state {
+  text-align: center;
+  padding: 64px 0;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.sv-empty-state p:first-child { font-size: 3rem; }
+.sv-empty-state p { font-size: 0.9rem; }
+
+/* ── Entry Modal ───────────────────────────────────── */
+.sv-modal { max-width: 520px; }
+
+.sv-modal-balance {
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sv-modal-balance.positive {
+  background: #d1fae5;
+}
+
+.sv-modal-balance.negative {
+  background: #ffe4e6;
+}
+
+.sv-modal-balance span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.sv-modal-balance strong {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+/* ── Entry form ────────────────────────────────────── */
+.sv-entry-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sv-entry-form select,
+.sv-entry-form input {
+  padding: 9px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.855rem;
+  font-weight: 500;
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.15s;
+  height: 40px;
+}
+
+.sv-entry-form select:focus,
+.sv-entry-form input:focus {
+  border-color: var(--color-indigo);
+  background: white;
+}
+
+.sv-entry-form select { flex: 0 0 140px; }
+.sv-entry-form input[type="text"]:first-of-type { flex: 1; min-width: 120px; }
+.sv-entry-form input[type="date"] { flex: 0 0 140px; }
+.sv-entry-form input[type="text"]:last-of-type { flex: 1 1 100%; }
+
+.sv-entry-form button {
+  background: linear-gradient(135deg, #4f46e5, #3730a3);
+  color: white;
+  border: none;
+  padding: 0 20px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.855rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.sv-entry-form button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Entry list ────────────────────────────────────── */
+.sv-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.sv-entry-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  transition: background 0.1s;
+}
+
+.sv-entry-row:hover { background: #f8fafc; }
+
+.sv-entry-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sv-entry-type {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sv-entry-type.deposit { background: #d1fae5; color: #065f46; }
+.sv-entry-type.withdrawal { background: #ffe4e6; color: #9f1239; }
+.sv-entry-type.update { background: #e0e7ff; color: #3730a3; }
+
+.sv-entry-note {
+  font-size: 0.855rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.sv-entry-date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+.sv-entry-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sv-entry-amount {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.sv-entry-amount.pos { color: var(--color-green); }
+.sv-entry-amount.neg { color: var(--color-red); }
+
+.sv-entry-delete {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: var(--radius-xs);
+  opacity: 0;
+  transition: all 0.15s;
+}
+
+.sv-entry-row:hover .sv-entry-delete { opacity: 1; }
+.sv-entry-delete:hover { color: var(--color-red); background: var(--color-red-light); }
+
+.sv-empty { color: var(--color-text-muted); font-size: 0.855rem; text-align: center; padding: 24px 0; }
+.sv-muted { color: var(--color-text-muted); }
+
+/* ── Savings.css also used by SaldoRekening + InitialBalance ─ */
 .current-balance-card {
   background: linear-gradient(135deg, #1e293b 0%, #312e81 100%);
   border-radius: var(--radius-lg);
@@ -40,7 +379,6 @@
 .current-balance-card h2.positive { color: #86efac; }
 .current-balance-card h2.negative { color: #fca5a5; }
 
-/* ── Breakdown row ────────────────────────────────── */
 .balance-breakdown {
   display: flex;
   align-items: center;
@@ -79,7 +417,6 @@
   opacity: 0.4;
 }
 
-/* ── Set initial balance form ─────────────────────── */
 .field-hint {
   font-size: 0.82rem;
   color: var(--color-text-muted);
@@ -161,9 +498,7 @@
   transition: all 0.15s;
 }
 
-.initial-balance-display button:hover {
-  background: #e0e7ff;
-}
+.initial-balance-display button:hover { background: #e0e7ff; }
 
 .saved-badge {
   font-size: 0.82rem;
