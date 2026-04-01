@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import {
-  useSavings, useCreateSavings, useUpdateSavings, useDeleteSavings,
+  useSavings, useCreateSavings, useDeleteSavings,
   useSavingsEntries, useAddSavingsEntry, useDeleteSavingsEntry,
 } from '../hooks/useSavings';
 import './Savings.css';
