@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { useSummary, useByCategory, useByPaymentMethod, useDailyExpenses, useYearlySummary } from '../hooks/useTransactions';
+import { useTrend, useByWeekday } from '../hooks/useTransactions';
+import { useBudgets } from '../hooks/useBudgets';
+import { useSavings } from '../hooks/useSavings';
 import { useCurrentBalance } from '../hooks/useBalance';
 import { Doughnut, Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, ArcElement, Tooltip, Legend,
   CategoryScale, LinearScale, BarElement, Title,
 } from 'chart.js';
+import { LineElement, PointElement, Filler } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import PaymentBadge from '../components/PaymentBadge';
 import './Dashboard.css';
 
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, ChartDataLabels);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, ChartDataLabels, LineElement, PointElement, Filler);
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -44,6 +49,11 @@ export default function Dashboard() {
   // Yearly data
   const { data: yearlyData } = useYearlySummary(year);
   const { data: byPaymentMethod } = useByPaymentMethod(month, year);
+
+  const { data: trendData } = useTrend();
+  const { data: weekdayData } = useByWeekday(month, year);
+  const { data: budgetsData } = useBudgets(month, year);
+  const { data: savingsData = [] } = useSavings();
 
   // Savings (always shown)
   const { data: balanceData } = useCurrentBalance();
@@ -129,6 +139,68 @@ export default function Dashboard() {
   const yearlyChartOptions = {
     ...chartOptions,
     plugins: { legend: { display: true, position: 'top', labels: { font: { size: 12 }, usePointStyle: true } }, datalabels: { display: false } },
+  };
+
+  // Trend chart data
+  const trendLabels = trendData?.map((d) => {
+    const date = new Date(d.year, d.month - 1, 1);
+    return date.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+  }) || [];
+
+  const trendChartData = {
+    labels: trendLabels,
+    datasets: [
+      {
+        label: 'Income',
+        data: trendData?.map((d) => d.income) || [],
+        borderColor: 'rgba(16,185,129,0.9)',
+        backgroundColor: 'rgba(16,185,129,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: 'rgba(16,185,129,0.9)',
+      },
+      {
+        label: 'Expense',
+        data: trendData?.map((d) => d.expense) || [],
+        borderColor: 'rgba(244,63,94,0.9)',
+        backgroundColor: 'rgba(244,63,94,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: 'rgba(244,63,94,0.9)',
+      },
+    ],
+  };
+
+  const trendOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'top', labels: { font: { size: 12 }, usePointStyle: true } },
+      datalabels: { display: false },
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: {
+        grid: { color: '#f1f5f9' },
+        ticks: {
+          font: { size: 11 },
+          callback: (v) => v >= 1_000_000 ? `${(v/1_000_000).toFixed(1)}jt` : v >= 1000 ? `${(v/1000).toFixed(0)}rb` : v,
+        },
+      },
+    },
+  };
+
+  // Weekday chart data
+  const weekdayChartData = {
+    labels: weekdayData?.map((d) => d.day) || [],
+    datasets: [{
+      label: 'Pengeluaran',
+      data: weekdayData?.map((d) => d.total) || [],
+      backgroundColor: weekdayData?.map((d) => d.total > 0 ? 'rgba(99,102,241,0.7)' : 'rgba(226,232,240,0.5)') || [],
+      borderRadius: 4,
+      borderSkipped: false,
+    }],
   };
 
   return (
@@ -238,6 +310,94 @@ export default function Dashboard() {
               </div>
             </div>
           )}
+
+          {/* Trend 6 bulan */}
+          <div className="chart-card chart-full">
+            <h3>Income vs Expense — 6 Bulan Terakhir</h3>
+            {trendData?.some((d) => d.income > 0 || d.expense > 0)
+              ? <Line data={trendChartData} options={trendOptions} />
+              : <p className="no-data">Belum ada data</p>
+            }
+          </div>
+
+          {/* Spending by weekday */}
+          <div className="charts-grid" style={{ marginTop: 20 }}>
+            <div className="chart-card">
+              <h3>Pengeluaran per Hari</h3>
+              {weekdayData?.some((d) => d.total > 0)
+                ? <Bar data={weekdayChartData} options={chartOptions} />
+                : <p className="no-data">Belum ada data bulan ini</p>
+              }
+            </div>
+
+            {/* Budget vs Actual */}
+            <div className="chart-card">
+              <h3>Budget vs Aktual</h3>
+              {budgetsData?.length > 0 ? (
+                <div className="budget-vs-actual">
+                  {budgetsData.map((b) => {
+                    const pct = Math.min((b.spent / Number(b.limitAmount)) * 100, 100);
+                    const over = b.spent > Number(b.limitAmount);
+                    const warn = !over && pct >= 75;
+                    return (
+                      <div key={b.id} className="bva-row">
+                        <div className="bva-label">
+                          <span>{b.category?.icon} {b.category?.name}</span>
+                          <span className={over ? 'bva-over' : warn ? 'bva-warn' : 'bva-safe'}>
+                            {Math.round(pct)}%
+                          </span>
+                        </div>
+                        <div className="bva-track">
+                          <div
+                            className={`bva-fill ${over ? 'over' : warn ? 'warn' : ''}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <div className="bva-amounts">
+                          <span>Rp {b.spent.toLocaleString('id-ID')}</span>
+                          <span className="bva-limit">/ Rp {Number(b.limitAmount).toLocaleString('id-ID')}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : <p className="no-data">Belum ada budget bulan ini</p>}
+            </div>
+          </div>
+
+          {/* Savings progress */}
+          {savingsData.length > 0 && (
+            <div className="chart-card chart-full" style={{ marginTop: 20 }}>
+              <h3>Savings Progress</h3>
+              <div className="savings-overview-grid">
+                {savingsData.map((sv) => {
+                  const pct = sv.target ? Math.min((sv.balance / sv.target) * 100, 100) : null;
+                  return (
+                    <div key={sv.id} className="sov-card">
+                      <div className="sov-top">
+                        <span className="sov-icon">{sv.icon}</span>
+                        <div>
+                          <p className="sov-name">{sv.name}</p>
+                          <span className={`sv-type-badge ${sv.type.toLowerCase()}`}>
+                            {sv.type === 'TABUNGAN' ? 'Tabungan' : 'Investasi'}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="sov-balance">Rp {sv.balance.toLocaleString('id-ID')}</p>
+                      {pct !== null && (
+                        <>
+                          <div className="sv-progress-track" style={{ marginBottom: 4 }}>
+                            <div className="sv-progress-fill" style={{ width: `${pct}%` }} />
+                          </div>
+                          <p className="sov-target">{pct.toFixed(0)}% dari Rp {sv.target.toLocaleString('id-ID')}</p>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -297,6 +457,15 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Trend line chart */}
+          <div className="chart-card chart-full">
+            <h3>Income vs Expense — 6 Bulan Terakhir</h3>
+            {trendData?.some((d) => d.income > 0 || d.expense > 0)
+              ? <Line data={trendChartData} options={trendOptions} />
+              : <p className="no-data">Belum ada data</p>
+            }
           </div>
         </>
       )}

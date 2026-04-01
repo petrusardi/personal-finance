@@ -1,0 +1,114 @@
+.recurring-page h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+}
+
+.recurring-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.recurring-apply-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.recurring-apply-date input {
+  padding: 7px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  outline: none;
+  background: white;
+  transition: border-color 0.15s;
+}
+
+.recurring-apply-date input:focus { border-color: var(--color-indigo); }
+
+.recurring-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.recurring-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recurring-item {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-xs);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid transparent;
+  transition: box-shadow 0.15s;
+}
+
+.recurring-item:hover { box-shadow: var(--shadow-md); }
+.recurring-item.income { border-left-color: var(--color-green); }
+.recurring-item.expense { border-left-color: var(--color-red); }
+
+.recurring-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.recurring-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+}
+
+.recurring-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+}
+
+.recurring-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recurring-amount {
+  font-weight: 800;
+  font-size: 0.975rem;
+}
+
+.recurring-amount.income { color: var(--color-green); }
+.recurring-amount.expense { color: var(--color-red); }
+
+.btn-apply {
+  background: var(--color-indigo);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.btn-apply:hover { opacity: 0.85; }
+.btn-apply:disabled { opacity: 0.5; cursor: not-allowed; }

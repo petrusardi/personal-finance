@@ -12,6 +12,7 @@ const getAll = async (req, res) => {
     const end = new Date(year, month, 0, 23, 59, 59);
     where.date = { gte: start, lte: end };
   }
+  if (req.query.search) where.description = { contains: req.query.search, mode: 'insensitive' };
 
   const [total, transactions] = await Promise.all([
     prisma.transaction.count({ where }),
@@ -178,4 +179,43 @@ const getYearlySummary = async (req, res) => {
   res.json(monthly);
 };
 
-module.exports = { getAll, getSummary, getByCategory, getByPaymentMethod, getDailyExpenses, getYearlySummary, create, update, remove };
+const getTrend = async (req, res) => {
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({ year: d.getFullYear(), month: d.getMonth() + 1 });
+  }
+  const results = await Promise.all(months.map(async ({ year, month }) => {
+    const start = new Date(year, month - 1, 1);
+    const end = new Date(year, month, 0, 23, 59, 59);
+    const [income, expense] = await Promise.all([
+      prisma.transaction.aggregate({ where: { userId: req.userId, type: 'INCOME', date: { gte: start, lte: end } }, _sum: { amount: true } }),
+      prisma.transaction.aggregate({ where: { userId: req.userId, type: 'EXPENSE', date: { gte: start, lte: end } }, _sum: { amount: true } }),
+    ]);
+    return { month, year, income: Number(income._sum.amount) || 0, expense: Number(expense._sum.amount) || 0 };
+  }));
+  res.json(results);
+};
+
+const getByWeekday = async (req, res) => {
+  const { month, year } = req.query;
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 0, 23, 59, 59);
+  const transactions = await prisma.transaction.findMany({
+    where: { userId: req.userId, type: 'EXPENSE', date: { gte: start, lte: end } },
+    select: { amount: true, date: true },
+  });
+  const days = [
+    { day: 'Mon', total: 0 }, { day: 'Tue', total: 0 }, { day: 'Wed', total: 0 },
+    { day: 'Thu', total: 0 }, { day: 'Fri', total: 0 }, { day: 'Sat', total: 0 }, { day: 'Sun', total: 0 },
+  ];
+  for (const tx of transactions) {
+    const d = new Date(tx.date).getDay(); // 0=Sun
+    const idx = d === 0 ? 6 : d - 1; // remap to Mon=0..Sun=6
+    days[idx].total += Number(tx.amount);
+  }
+  res.json(days);
+};
+
+module.exports = { getAll, getSummary, getByCategory, getByPaymentMethod, getDailyExpenses, getYearlySummary, getTrend, getByWeekday, create, update, remove };

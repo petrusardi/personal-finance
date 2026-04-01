@@ -334,3 +334,104 @@
 .amount-expense { color: #dc2626; font-weight: 600; }
 .amount-balance.pos { color: #3730a3; font-weight: 700; }
 .amount-balance.neg { color: #dc2626; font-weight: 700; }
+
+/* ── Budget vs Actual ──────────────────────────────── */
+.budget-vs-actual {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bva-row { display: flex; flex-direction: column; gap: 5px; }
+
+.bva-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.855rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.bva-safe { color: var(--color-green); font-weight: 700; }
+.bva-warn { color: var(--color-amber); font-weight: 700; }
+.bva-over { color: var(--color-red); font-weight: 700; }
+
+.bva-track {
+  height: 7px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.bva-fill {
+  height: 100%;
+  background: var(--color-green);
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+.bva-fill.warn { background: var(--color-amber); }
+.bva-fill.over { background: var(--color-red); }
+
+.bva-amounts {
+  display: flex;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.bva-limit { color: var(--color-text-muted); }
+
+/* ── Savings overview ──────────────────────────────── */
+.savings-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.sov-card {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.sov-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sov-icon {
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  background: white;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sov-name {
+  font-weight: 700;
+  font-size: 0.855rem;
+  color: var(--color-text-primary);
+  margin-bottom: 3px;
+}
+
+.sov-balance {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.sov-target {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}

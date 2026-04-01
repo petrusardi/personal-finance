@@ -34,6 +34,9 @@ export default function Layout() {
           <NavLink to="/transactions">
             <span className="nav-icon">💳</span>Transactions
           </NavLink>
+          <NavLink to="/recurring">
+            <span className="nav-icon">🔁</span>Recurring
+          </NavLink>
           <NavLink to="/categories">
             <span className="nav-icon">🏷️</span>Categories
           </NavLink>

@@ -120,15 +120,17 @@ export default function Transactions() {
   const [filterCategory, setFilterCategory] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterPayment, setFilterPayment] = useState('');
+  const [search, setSearch] = useState('');
 
   // Reset to page 1 when filters/month/year change
-  useEffect(() => { setPage(1); }, [month, year, filterCategory, filterType, filterPayment]);
+  useEffect(() => { setPage(1); }, [month, year, filterCategory, filterType, filterPayment, search]);
 
   const { data, isLoading } = useTransactions({
     month, year, page, limit: LIMIT,
     ...(filterCategory && { categoryId: filterCategory }),
     ...(filterType && { type: filterType }),
     ...(filterPayment && { paymentMethod: filterPayment }),
+    ...(search && { search }),
   });
 
   const { data: categories } = useCategories();
@@ -148,7 +150,7 @@ export default function Transactions() {
     setShowForm(false);
   };
 
-  const hasFilter = filterCategory || filterType || filterPayment;
+  const hasFilter = filterCategory || filterType || filterPayment || search;
   const transactions = data?.transactions || [];
   const totalRecords = data?.total || 0;
   const totalPages = data?.pages || 1;
@@ -203,8 +205,21 @@ export default function Transactions() {
               <option key={key} value={key}>{val.icon} {val.label}</option>
             ))}
           </select>
+          <div className="search-wrap">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
+              <path d="M10 10l2.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <input
+              className="search-input"
+              placeholder="Cari transaksi..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && <button className="search-clear" onClick={() => setSearch('')}>×</button>}
+          </div>
           {hasFilter && (
-            <button className="btn-reset" onClick={() => { setFilterType(''); setFilterCategory(''); setFilterPayment(''); }}>
+            <button className="btn-reset" onClick={() => { setFilterType(''); setFilterCategory(''); setFilterPayment(''); setSearch(''); }}>
               ✕ Reset
             </button>
           )}

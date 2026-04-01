@@ -65,3 +65,15 @@ export const useDeleteTransaction = () => {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['transactions'] }),
   });
 };
+
+export const useTrend = () =>
+  useQuery({
+    queryKey: ['trend'],
+    queryFn: () => api.get('/transactions/trend').then((r) => r.data),
+  });
+
+export const useByWeekday = (month, year) =>
+  useQuery({
+    queryKey: ['byWeekday', month, year],
+    queryFn: () => api.get('/transactions/by-weekday', { params: { month, year } }).then((r) => r.data),
+  });

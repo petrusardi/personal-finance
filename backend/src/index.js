@@ -9,6 +9,7 @@ const budgetRoutes = require('./routes/budget.routes');
 const importRoutes = require('./routes/import.routes');
 const balanceRoutes = require('./routes/balance.routes');
 const savingsRoutes = require('./routes/savings.routes');
+const recurringRoutes = require('./routes/recurring.routes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/budgets', budgetRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/balance', balanceRoutes);
 app.use('/api/savings', savingsRoutes);
+app.use('/api/recurring', recurringRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
