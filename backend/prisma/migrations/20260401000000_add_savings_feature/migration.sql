@@ -1,11 +1,17 @@
--- CreateEnum
-CREATE TYPE "SavingsType" AS ENUM ('TABUNGAN', 'INVESTASI');
+-- CreateEnum (skip if already exists)
+DO $$ BEGIN
+  CREATE TYPE "SavingsType" AS ENUM ('TABUNGAN', 'INVESTASI');
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
 
--- CreateEnum
-CREATE TYPE "SavingsEntryType" AS ENUM ('DEPOSIT', 'WITHDRAWAL', 'UPDATE');
+-- CreateEnum (skip if already exists)
+DO $$ BEGIN
+  CREATE TYPE "SavingsEntryType" AS ENUM ('DEPOSIT', 'WITHDRAWAL', 'UPDATE');
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateTable
-CREATE TABLE "Savings" (
+CREATE TABLE IF NOT EXISTS "Savings" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "icon" TEXT NOT NULL DEFAULT '💰',
@@ -18,7 +24,7 @@ CREATE TABLE "Savings" (
 );
 
 -- CreateTable
-CREATE TABLE "SavingsEntry" (
+CREATE TABLE IF NOT EXISTS "SavingsEntry" (
     "id" SERIAL NOT NULL,
     "savingsId" INTEGER NOT NULL,
     "amount" DECIMAL(12,2) NOT NULL,
@@ -31,14 +37,21 @@ CREATE TABLE "SavingsEntry" (
     CONSTRAINT "SavingsEntry_pkey" PRIMARY KEY ("id")
 );
 
--- AddForeignKey
-ALTER TABLE "Savings" ADD CONSTRAINT "Savings_userId_fkey"
+-- AddForeignKey (skip if already exists)
+DO $$ BEGIN
+  ALTER TABLE "Savings" ADD CONSTRAINT "Savings_userId_fkey"
     FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
 
--- AddForeignKey
-ALTER TABLE "SavingsEntry" ADD CONSTRAINT "SavingsEntry_savingsId_fkey"
+DO $$ BEGIN
+  ALTER TABLE "SavingsEntry" ADD CONSTRAINT "SavingsEntry_savingsId_fkey"
     FOREIGN KEY ("savingsId") REFERENCES "Savings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
 
--- AddForeignKey
-ALTER TABLE "SavingsEntry" ADD CONSTRAINT "SavingsEntry_userId_fkey"
+DO $$ BEGIN
+  ALTER TABLE "SavingsEntry" ADD CONSTRAINT "SavingsEntry_userId_fkey"
     FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
