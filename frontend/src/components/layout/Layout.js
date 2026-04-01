@@ -46,9 +46,6 @@ export default function Layout() {
           <NavLink to="/saldo-rekening">
             <span className="nav-icon">💳</span>Saldo Rekening
           </NavLink>
-          <NavLink to="/initial-balance">
-            <span className="nav-icon">💵</span>Saldo Awal
-          </NavLink>
         </nav>
 
         <div className="sidebar-user">
